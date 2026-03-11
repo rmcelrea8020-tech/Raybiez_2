@@ -1,0 +1,356 @@
+<!doctype html><html><head><style type="text/css">body{
+background:linear-gradient(140deg,#020617,#0f172a);
+font-family:Segoe UI,Arial;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+width:560px;
+background:#1e293b;
+padding:35px;
+border-radius:20px;
+box-shadow:0 25px 60px rgba(0,0,0,.7);
+}
+
+h1{
+text-align:center;
+margin-top:0;
+}
+
+button{
+display:block;
+margin:auto;
+margin-bottom:25px;
+background:#6366f1;
+border:none;
+padding:14px 26px;
+color:white;
+font-size:16px;
+border-radius:12px;
+cursor:pointer;
+transition:.2s;
+}
+
+button:hover{
+background:#4f46e5;
+transform:scale(1.05);
+}
+
+.card{
+background:#020617;
+padding:20px;
+border-radius:14px;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+border-bottom:1px solid rgba(255,255,255,.08);
+margin:8px 0;
+padding-bottom:6px;
+}
+
+.row b{
+color:#93c5fd;
+}
+
+.mutation{
+margin:6px 0;
+font-size:14px;
+padding:4px;
+border-radius:6px;
+}
+
+.common{color:#9ca3af}
+.uncommon{color:#4ade80}
+.rare{color:#60a5fa}
+.ultra{color:#f472b6}
+.epic{color:#c084fc}
+.legendary{color:#facc15}</style></head><body><div class="container">
+
+	<h1>Wings of Fire OC Generator</h1>
+
+	<button onclick="generateDragon()">Generate Dragon</button>
+
+	<div class="card">
+
+		<div class="row"><b>Tribe</b><span id="tribe"></span></div>
+		<div class="row"><b>Type</b><span id="type"></span></div>
+		<div class="row"><b>Subspecies</b><span id="subspecies"></span></div>
+		<div class="row"><b>Age</b><span id="age"></span></div>
+		<div class="row"><b>Gender</b><span id="gender"></span></div>
+
+		<h3>Mutations</h3>
+		<div id="mutations"></div>
+
+	</div>
+</div><script type="text/javascript">function rand(arr) {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
+function uniquePick(pool, count) {
+
+  let shuffled = [...pool].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count)
+
+}
+
+const tribes = [
+  "SkyWing", "SeaWing", "IceWing", "NightWing",
+  "RainWing", "SandWing", "MudWing",
+  "SilkWing", "HiveWing", "LeafWing"
+]
+
+const ages = [
+  "Dragonet", "Young Dragon", "Adult", "Older Adult", "Elder"
+]
+
+const genders = [
+  "He/Him", "She/Her", "They/Them", "It/Its",
+  "Genderfluid", "Agender"
+]
+
+const variants = [
+  "MountainWing", "AshWing", "StarWing", "MoonWing",
+  "ForestWing", "SavannaWing", "DuneWing", "StormWing",
+  "CliffWing", "RiverWing", "BlizzardWing"
+]
+
+function variantRoll() {
+
+  if (Math.random() < 0.35) return "None"
+  return rand(variants)
+
+}
+
+function mutationCount(type) {
+
+  let r = Math.random()
+
+  if (type === "Pure") {
+
+    if (r < 0.40) return 0
+    if (r < 0.65) return 1
+    if (r < 0.85) return 2
+    if (r < 0.95) return 3
+    if (r < 0.99) return 4
+    return 5
+
+  } else {
+
+    if (r < 0.01) return 0
+    if (r < 0.05) return 1
+    if (r < 0.45) return 2
+    if (r < 0.70) return 3
+    if (r < 0.90) return 4
+    return 5
+
+  }
+
+}
+
+const universal = [
+
+  { name: "Animus", rarity: "legendary", desc: "Dragon possesses ancient magic capable of enchanting objects and altering reality." },
+
+  { name: "Gigantism", rarity: "ultra", desc: "Dragon grows far larger than the average member of their tribe." },
+
+  { name: "Dwarfism", rarity: "ultra", desc: "Dragon is significantly smaller than normal." },
+
+  { name: "Albino", rarity: "epic", desc: "Complete loss of pigment causes white scales and red eyes." },
+
+  { name: "Melanistic", rarity: "epic", desc: "Extremely dark pigmentation causes nearly black scales." },
+
+  { name: "Leucistic", rarity: "ultra", desc: "Scales are pale and washed out due to partial pigment loss." },
+
+  { name: "Lavender", rarity: "ultra", desc: "Scales carry a soft lavender-purple tint." },
+
+  { name: "Piebald", rarity: "ultra", desc: "Large white patches appear across the body." },
+
+  { name: "Chimerism", rarity: "epic", desc: "Dragon shows two genetic scale patterns split across the body." },
+
+  { name: "Axanthic", rarity: "rare", desc: "Red and yellow pigments are missing, giving cool toned scales." },
+
+  { name: "Abundism", rarity: "uncommon", desc: "Extra patterns and markings appear across scales." },
+
+  { name: "Heterochromia", rarity: "uncommon", desc: "Each eye is a different color." },
+
+  { name: "Blind", rarity: "rare", desc: "Dragon has limited or no vision." },
+
+  { name: "Deaf", rarity: "rare", desc: "Dragon has little or no hearing." },
+
+  { name: "Big Wings", rarity: "uncommon", desc: "Wings are larger than usual and allow powerful flight." },
+
+  { name: "Small Wings", rarity: "uncommon", desc: "Wings are smaller and flight is harder." },
+
+  { name: "Wingless", rarity: "rare", desc: "Dragon lacks wings entirely." },
+
+  { name: "Polydactyl", rarity: "ultra", desc: "Extra claws grow from the talons." },
+
+  { name: "Four Wings", rarity: "epic", desc: "Dragon has two full wing pairs." },
+
+  { name: "Softscales", rarity: "uncommon", desc: "Scales are softer and flexible." },
+
+  { name: "StiffScales", rarity: "uncommon", desc: "Scales are rigid and armor-like." },
+
+  { name: "Enhanced vision", rarity: "rare", desc: "Dragon has extremely sharp eyesight." },
+
+  { name: "Enhanced hearing", rarity: "rare", desc: "Dragon hears distant sounds easily." },
+
+  { name: "Light-sensitive eyes", rarity: "rare", desc: "Bright light causes pain to the dragon's eyes." },
+
+  { name: "Double tail", rarity: "ultra", desc: "Dragon grows two separate tails." },
+
+  { name: "Prism Scales", rarity: "ultra", desc: "Scales refract sunlight into rainbow colors." },
+
+  { name: "Crystal Horns", rarity: "epic", desc: "Horns grow crystalline structures." }
+
+]
+
+const hybridOnly = [
+
+  { name: "Split Breath", rarity: "uncommon", desc: "Dragon can breathe two different elemental attacks." },
+
+  { name: "Mixed patterns", rarity: "common", desc: "Scale patterns from multiple tribes overlap." },
+
+  { name: "Mixed eyes", rarity: "common", desc: "Each eye resembles a different tribe." },
+
+  { name: "Mixed pupils", rarity: "uncommon", desc: "Eye pupils have different tribal shapes." },
+
+  { name: "Scale gradients", rarity: "common", desc: "Scale colors blend between tribes." },
+
+  { name: "Split horns", rarity: "common", desc: "Each horn resembles a different tribe." },
+
+  { name: "Dual tail traits", rarity: "common", desc: "Tail has multiple tribe features." },
+
+  { name: "Patch scales", rarity: "common", desc: "Small patches of another tribe appear." },
+
+  { name: "Mixed colors", rarity: "common", desc: "Body palette mixes multiple tribe colors." },
+
+  { name: "Ultra chimerism", rarity: "rare", desc: "Dragon body splits dramatically into different tribe halves." },
+
+  { name: "4 pairs of wings", rarity: "rare", desc: "Dragon grows four wing pairs." },
+
+  { name: "Bigwing", rarity: "uncommon", desc: "Dragon is larger with oversized wings." },
+
+  { name: "Colossalwing", rarity: "rare", desc: "Dragon is massive with enormous wings." },
+
+  { name: "Smallwing", rarity: "uncommon", desc: "Dragon is smaller with reduced wings." },
+
+  { name: "Tinywing", rarity: "rare", desc: "Dragon is extremely small." }
+
+]
+
+const tribeMutations = {
+
+  SkyWing: [
+    { name: "Blue Fire", rarity: "rare", desc: "Fire breath burns hotter and glows blue." },
+    { name: "Fire Blood", rarity: "rare", desc: "Blood is extremely hot and can burn attackers." },
+    { name: "Firescales", rarity: "ultra", desc: "Scales burn anything they touch due to extreme heat." },
+    { name: "Sunscales", rarity: "ultra", desc: "Scales glow with sunlight energy and fire becomes radiant light." },
+    { name: "Windseer", rarity: "epic", desc: "Dragon can sense and manipulate wind currents." }
+  ],
+
+  SeaWing: [
+    { name: "Frill Gills", rarity: "uncommon", desc: "External gills grow from the neck like an axolotl." },
+    { name: "Sharkscales", rarity: "rare", desc: "Dragon has shark-like fins and streamlined scales." },
+    { name: "Glowscales", rarity: "ultra", desc: "Entire body glows with bioluminescent light." },
+    { name: "Currentseer", rarity: "epic", desc: "Dragon can sense and manipulate ocean currents." }
+  ],
+
+  NightWing: [
+    { name: "Mindseer", rarity: "epic", desc: "Dragon can read the thoughts of nearby dragons." },
+    { name: "Futureseer", rarity: "epic", desc: "Dragon sees visions of the future." },
+    { name: "Pastseer", rarity: "epic", desc: "Dragon can view events from the past." },
+    { name: "Shadowseer", rarity: "epic", desc: "Dragon can control shadows and darkness." },
+    { name: "Starscales", rarity: "rare", desc: "Star patterns cover the dragon’s entire body." }
+  ],
+
+  RainWing: [
+    { name: "Leafspeak", rarity: "epic", desc: "Dragon can communicate with plants." },
+    { name: "Venomscales", rarity: "ultra", desc: "Scales leak dangerous venom." },
+    { name: "Fruitbatscales", rarity: "rare", desc: "Dragon has small batlike wings and fruit-colored scales." },
+    { name: "Glowscales", rarity: "epic", desc: "Scales glow brightly at will." }
+  ],
+
+  SandWing: [
+    { name: "Sandseer", rarity: "ultra", desc: "Dragon can control sand and desert winds." },
+    { name: "Dustscales", rarity: "epic", desc: "Dragon can summon powerful sandstorms." },
+    { name: "Sunscales", rarity: "ultra", desc: "Scales glow golden and emit light blasts." },
+    { name: "Scorpionscales", rarity: "rare", desc: "Tail barb resembles a giant scorpion stinger." }
+  ],
+
+  MudWing: [
+    { name: "Animalspeak", rarity: "ultra", desc: "Dragon can understand and communicate with animals." },
+    { name: "Waterscales", rarity: "rare", desc: "Dragon can breathe underwater using gills." },
+    { name: "Clayscales", rarity: "rare", desc: "Scales are thick and clay-like." }
+  ],
+
+  SilkWing: [
+    { name: "Flamesilk", rarity: "rare", desc: "Silk burns extremely hot." },
+    { name: "Frostsilk", rarity: "rare", desc: "Silk freezes objects it touches." },
+    { name: "VenomSilk", rarity: "rare", desc: "Silk contains venom." }
+  ],
+
+  HiveWing: [
+    { name: "Venomscales", rarity: "ultra", desc: "Scales release venom when touched." },
+    { name: "Bumblescales", rarity: "rare", desc: "Dragon grows fuzzy bee-like scales." },
+    { name: "Hiveseer", rarity: "uncommon", desc: "Dragon can communicate telepathically with HiveWings." }
+  ],
+
+  LeafWing: [
+    { name: "Toxinscales", rarity: "ultra", desc: "Scales release paralyzing toxins." },
+    { name: "Bloomscales", rarity: "rare", desc: "Scales resemble flowers and produce pollen." },
+    { name: "Carnivorescales", rarity: "rare", desc: "Dragon consumes other dragons like carnivorous plants." }
+  ]
+
+}
+
+function generateDragon() {
+
+  let type = "Pure"
+  let roll = Math.random()
+
+  if (roll < 0.55) type = "Pure"
+  else if (roll < 0.9) type = "Hybrid"
+  else type = "Tribred"
+
+  let tribe1 = rand(tribes)
+  let tribe2 = rand(tribes)
+
+  let tribeText = tribe1
+  if (type !== "Pure") tribeText += " + " + tribe2
+
+  let pool = [...universal]
+
+  if (tribeMutations[tribe1]) pool = pool.concat(tribeMutations[tribe1])
+
+  if (type !== "Pure") pool = pool.concat(hybridOnly)
+
+  let count = mutationCount(type)
+
+  let chosen = uniquePick(pool, count)
+
+  let html = ""
+
+  chosen.forEach(m => {
+    html += `<div class="mutation ${m.rarity}">
+<b>${m.name}</b> (${m.rarity}) — ${m.desc}
+</div>`
+  })
+
+  if (html === "") html = "None"
+
+  document.getElementById("tribe").innerText = tribeText
+  document.getElementById("type").innerText = type
+  document.getElementById("subspecies").innerText = variantRoll()
+  document.getElementById("age").innerText = rand(ages)
+  document.getElementById("gender").innerText = rand(genders)
+  document.getElementById("mutations").innerHTML = html
+
+}</script></body><html>
